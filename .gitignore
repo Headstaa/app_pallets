@@ -1,0 +1,9 @@
+# Base de datos local (Contiene datos de prueba de la planta)
+produccion.db
+
+# Archivos temporales o de caché de Python
+__pycache__/
+*.pyc
+
+# Carpetas ocultas de configuración de Streamlit
+.streamlit/
