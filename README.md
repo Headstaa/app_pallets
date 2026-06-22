@@ -27,5 +27,5 @@ El repositorio está organizado bajo una arquitectura de software limpia y modul
 └── requirements.txt    # Dependencias del proyecto para producción
 
 ---
-✒️ **Developed by:** [Juan Cabezas Tamayo] https://www.linkedin.com/in/juan-jose-cabezas-tamayo-87b402417/ — *Automation & Electronics Tech Student | Python Developer*
+✒️ **Developed by:** [Juan Cabezas Tamayo] (https://www.linkedin.com/in/juan-jose-cabezas-tamayo-87b402417/) — *Automation & Electronics Tech Student | Python Developer*
 
