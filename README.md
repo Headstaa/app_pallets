@@ -50,27 +50,27 @@ Este proyecto es una aplicación web interactiva desarrollada en **Python** con 
 
 Sigue estos pasos para clonar el proyecto, configurar el entorno virtual en Linux y ejecutar la aplicación correctamente:
 
-### 1. Clonar el Repositorio
+### Clonar el Repositorio
 Abre tu terminal y clona el proyecto desde GitHub:
 ```bash
 git clone [https://github.com/Headstaa/app_pallets.git](https://github.com/Headstaa/app_pallets.git)
 cd app_pallets
 ```
-# Crear el entorno virtual
+### Crear el entorno virtual
 ```bash
 python -m venv .venv
 ```
 
-# Activar el entorno virtual
+### Activar el entorno virtual
 ```
 source .venv/bin/activate
 ```
 
-# Instalar las librerías requeridas
+### Instalar las librerías requeridas
 ```
 pip install -r requirements.txt
 ```
-# Ejecutar la Aplicación
+### Ejecutar la Aplicación
 ```
 streamlit run app.py
 ```
