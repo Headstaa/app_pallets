@@ -124,3 +124,41 @@ def obtener_valores_unicos_por_fecha(fecha_busqueda):
     
     conexion.close()
     return lineas, productos
+
+# database.py (Agrega esto al final del archivo)
+import sqlite3
+
+def obtener_siguiente_pallet_id(linea, producto, lote):
+    """Calcula el correlativo del siguiente pallet basado en los existentes."""
+    conexion = sqlite3.connect("produccion.db")
+    cursor = conexion.cursor()
+    cursor.execute("""
+        SELECT COUNT(*) FROM estibas 
+        WHERE linea = ? AND producto = ? AND lote = ?
+    """, (linea, producto, lote))
+    cantidad_existente = cursor.fetchone()[0]
+    conexion.close()
+    return cantidad_existente + 1
+
+def ejecutar_query_directa(query, params=()):
+    """Ejecuta operaciones de escritura o borrado directo (UPDATE/DELETE)."""
+    conexion = sqlite3.connect("produccion.db")
+    cursor = conexion.cursor()
+    cursor.execute(query, params)
+    conexion.commit()
+    conexion.close()
+
+def obtener_metricas_programa(linea, producto, lote):
+    """Devuelve los datos procesados para el dashboard."""
+    conexion = sqlite3.connect("produccion.db")
+    conexion.row_factory = sqlite3.Row
+    cursor = conexion.cursor()
+    
+    cursor.execute("SELECT * FROM estibas WHERE estado = 'Validada' AND linea = ? AND producto = ?", (linea, producto))
+    todas_del_programa = [dict(fila) for fila in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM estibas WHERE estado = 'Validada' AND linea = ? AND producto = ? AND lote = ?", (linea, producto, lote))
+    validadas_lote_activo = [dict(fila) for fila in cursor.fetchall()]
+    conexion.close()
+    
+    return todas_del_programa, validadas_lote_activo
