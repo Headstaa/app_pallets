@@ -1,5 +1,18 @@
 # 🏭 Sistema de Control de Estibas
 
+<p align="left">
+  <img src="https://img.shields.io/github/stars/Headstaa/app_pallets?style=for-the-badge&logo=github&color=1e3a8a" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/forks/Headstaa/app_pallets?style=for-the-badge&logo=github&color=0284c7" alt="GitHub Forks">
+  <img src="https://img.shields.io/github/license/Headstaa/app_pallets?style=for-the-badge&color=f59e0b" alt="License">
+</p>
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3.14-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux">
+</p>
+
 ¡Bienvenido al **Sistema de Control de Estibas**! Esta es una aplicación web robusta e interactiva desarrollada en **Python** utilizando el framework **Streamlit**. Está diseñada para simular el entorno de empaque automático de una planta industrial, permitiendo el control de calidad en tiempo real, la gestión de lotes y la validación segura de pallets (estibas).
 
 ---
@@ -27,19 +40,54 @@ https://github.com/user-attachments/assets/f685fdaf-3e8f-4dfa-a110-6c81cde36b2b
 
 
 ---
+# 📋 Sistema de Control de Planillas y Paletizado Industrial
+
+Este proyecto es una aplicación web interactiva desarrollada en **Python** con el framework **Streamlit**, diseñada para entornos de empaque industrial. Su objetivo principal es registrar, validar y controlar el flujo de paletizado en finales de línea (líneas de producción como Volpak), integrando la generación de códigos **SSCC de 18 dígitos**, control de firmas de operadores y almacenamiento de datos en una base local **SQLite**.
+
+---
+
+## 🚀 Instalación y Ejecución Local
+
+Sigue estos pasos para clonar el proyecto, configurar el entorno virtual en Linux y ejecutar la aplicación correctamente:
+
+### 1. Clonar el Repositorio
+Abre tu terminal y clona el proyecto desde GitHub:
+```bash
+git clone [https://github.com/Headstaa/app_pallets.git](https://github.com/Headstaa/app_pallets.git)
+cd app_pallets
+```
+# Crear el entorno virtual
+```bash
+python -m venv .venv
+```
+
+# Activar el entorno virtual
+```
+source .venv/bin/activate
+```
+
+# Instalar las librerías requeridas
+```
+pip install -r requirements.txt
+```
+# Ejecutar la Aplicación
+```
+streamlit run app.py
+```
+---
 
 ## 🛠️ Estructura del Proyecto
 
 El repositorio está organizado bajo una arquitectura de software limpia y modular:
 
 ```text
-├── app.py      # Aplicación principal de Streamlit (Interfaz de usuario y flujos)
+├── app.py              # Aplicación principal de Streamlit (Interfaz de usuario y flujos)
 ├── sscc_generador.py   # Módulo local de simulación para códigos SSCC de SAP
 ├── database.py         # La base de datos con sus funciones (Inicializacion, peticiones)
 ├── produccion.db       # Base de datos SQLite (se genera automáticamente en la primera ejecución)
 ├── estilos.py          # Mejoras adaptativas de los estilos + mobile 
 └── requirements.txt    # Dependencias del proyecto para producción
-
+```
 ---
 ✒️ **Developed by:** [Juan Cabezas Tamayo] (https://www.linkedin.com/in/juan-jose-cabezas-tamayo-87b402417/) — *Automation & Electronics Tech Student | Python Developer*
 
