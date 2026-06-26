@@ -33,10 +33,11 @@ https://github.com/user-attachments/assets/f685fdaf-3e8f-4dfa-a110-6c81cde36b2b
 El repositorio está organizado bajo una arquitectura de software limpia y modular:
 
 ```text
-├── app_pallets.py      # Aplicación principal de Streamlit (Interfaz de usuario y flujos)
+├── app.py      # Aplicación principal de Streamlit (Interfaz de usuario y flujos)
 ├── sscc_generador.py   # Módulo local de simulación para códigos SSCC de SAP
 ├── database.py         # La base de datos con sus funciones (Inicializacion, peticiones)
 ├── produccion.db       # Base de datos SQLite (se genera automáticamente en la primera ejecución)
+├── estilos.py          # Mejoras adaptativas de los estilos + mobile 
 └── requirements.txt    # Dependencias del proyecto para producción
 
 ---
