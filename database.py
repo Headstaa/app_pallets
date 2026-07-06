@@ -125,9 +125,6 @@ def obtener_valores_unicos_por_fecha(fecha_busqueda):
     conexion.close()
     return lineas, productos
 
-# database.py (Agrega esto al final del archivo)
-import sqlite3
-
 def obtener_siguiente_pallet_id(linea, producto, lote):
     """Calcula el correlativo del siguiente pallet basado en los existentes."""
     conexion = sqlite3.connect("produccion.db")

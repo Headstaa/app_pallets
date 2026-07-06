@@ -6,7 +6,6 @@ from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
 # Importaciones modulares locales
-from estilos import cargar_css_industrial
 from sscc_generador import generar_sscc_local
 from database import (
     inicializar_base_de_datos, 
@@ -21,9 +20,6 @@ from database import (
 
 # Configuración Inicial de la Página
 st.set_page_config(page_title="0467.MANAG.REC.022 V 1.0 Control de Estibas", page_icon="📋", layout="wide")
-
-# 🔥 Cargar estilos responsivos desde el nuevo archivo
-cargar_css_industrial()
 
 # Inicializar Base de Datos Central
 inicializar_base_de_datos()
@@ -165,11 +161,11 @@ if not pendientes:
 else:
     estiba_a_revisar = pendientes[0]
     with st.container(border=True):
-        st.markdown(f"🔬 **Validando Pallet N° {estiba_a_revisar['pallet_id']}**")
+        st.subheader(f"🔬 **Validando Pallet N° {estiba_a_revisar['pallet_id']}**")
         st.markdown("---")
         
         col_rev1, col_rev2 = st.columns(2)
-        with col_rev1: v_pallet_id = st.number_input("N° Pallet Corregido:", value=int(estiba_a_revisar["pallet_id"]), key=f"edit_p_{estiba_a_revisar['id']}")
+        with col_rev1: v_pallet_id = st.number_input("N° Pallet:", value=int(estiba_a_revisar["pallet_id"]), key=f"edit_p_{estiba_a_revisar['id']}")
         with col_rev2: v_lote_final = st.text_input("Confirmar Lote:", value=str(estiba_a_revisar["lote"]), key=f"edit_l_{estiba_a_revisar['id']}")
             
         col_rev3, col_rev4 = st.columns(2)
@@ -267,7 +263,7 @@ else:
     #  MONITOREO DINÁMICO DEL ROBOT PALETIZADOR
     # ============================================================
     st.write("")
-    st.subheader("Estatus del Brazo Robotizado")
+    st.subheader("Estatus del Brazo Paletizador")
     
     if st.button("🔧 Simular Pulso PLC (Caja colocada por Robot +1)", use_container_width=True):
         st.session_state.robot_cajas_actual += 1
