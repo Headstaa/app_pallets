@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import time
 import pandas as pd
@@ -25,7 +24,7 @@ st.set_page_config(page_title="0467.MANAG.REC.022 V 1.0 Control de Estibas", pag
 inicializar_base_de_datos()
 
 # ============================================================
-#  LÓGICA DE BACKEND - CONTROL DE ESTADOS DE LA ORDEN
+#  LOGICA DE BACKEND - CONTROL DE ESTADOS DE LA ORDEN
 # ============================================================
 if "orden_configurada" in st.session_state and st.session_state.orden_configurada:
     st.session_state.contador_estiba_id = obtener_siguiente_pallet_id(
@@ -54,7 +53,7 @@ if "orden_configurada" not in st.session_state:
     st.session_state.orden_configurada = False
 
 # ============================================================
-#  CONTROL DE CABECERA Y DATOS DE LA ORDEN
+#  INFORMACION DEL HEADER Y DATOS DE LA ORDEN
 # ============================================================
 st.title("🏭 0467.MANAG.REC.022 V 1.0 Control de Estibas")
 st.caption("Panel de Validación y Control Integrado con Robot Paletizador")
@@ -116,7 +115,7 @@ with st.expander("📝 Configurar Datos de la Línea y Producto", expanded=not s
 
     if st.button("Fijar Información de Lote", type="primary", use_container_width=True):
         if not v_linea or not lote or producto == "Selecciona un producto...":
-            st.error("⚠️ Error crítico: Todos los campos operativos de la cabecera son obligatorios.")
+            st.error("⚠️ Error crítico: Todos los campos para datos son obligatorios.")
         else:
             st.session_state.orden_activa = {
                 "linea_produccion": v_linea, "producto": producto, "sap": sap,
@@ -125,7 +124,7 @@ with st.expander("📝 Configurar Datos de la Línea y Producto", expanded=not s
             st.session_state.orden_configurada = True
             if "contador_estiba_id" in st.session_state:
                 del st.session_state.contador_estiba_id
-            st.success("¡Header de producción fijado correctamente!")
+            st.success("¡Datos de producción fijados correctamente!")
             st.rerun()
 
 if st.session_state.orden_configurada:
@@ -134,7 +133,7 @@ if st.session_state.orden_configurada:
         st.write("")
         col_f1, col_f2 = st.columns(2)
         with col_f1: st.markdown(f"**🏭 Línea:** {st.session_state.orden_activa['linea_produccion']}")
-        with col_f2: st.markdown(f"**📦 SKU:** {st.session_state.orden_activa['producto']}")
+        with col_f2: st.markdown(f"**📦 Producto:** {st.session_state.orden_activa['producto']}")
             
         col_f3, col_f4 = st.columns(2)
         with col_f3: st.markdown(f"**🔢 Código SAP:** {st.session_state.orden_activa['sap']}")
@@ -146,13 +145,13 @@ if st.session_state.orden_configurada:
         col_f6 = st.columns(1)[0]
         with col_f6: st.markdown(f"**⏳ Vencimiento:** {st.session_state.orden_activa['fecha_vencimiento']}")
 else:
-    st.warning("⚠️ Alerta Operativa: Orden no configurada. Los registros entrantes carecerán de metadatos de cabecera.")
+    st.warning("⚠️ Alerta: Datos no configurados. Se necesitan los datos para poder registrar los Pallets.")
 
 # ============================================================
-#  COLA DE VERIFICACIÓN EN TIEMPO REAL
+#  COLA DE VERIFICACION EN TIEMPO REAL
 # ============================================================
 st.write("")
-st.header("📥 Validación Obligatoria de Operador")
+st.header("📥 Validación Pallets por el Operador")
 
 pendientes = obtener_estibas_por_estado("Pendiente de Validación")
 
@@ -192,7 +191,6 @@ else:
                     
                     turno_calculado = 1 if hora_editada >= 22 or hora_editada < 6 else (2 if hora_editada < 14 else 3)
                     
-                    # 🔥 Llamada limpia al backend modular
                     query_update = """
                         UPDATE estibas 
                         SET pallet_id = ?, hora_cierre = ?, turno = ?, lote = ?, 
@@ -208,19 +206,19 @@ else:
                 st.error("❌ Firma Requerida: Digita tu nombre para poder validar el registro.")
 
         with col_btn2:
-            if st.button("🗑️ Descartar Registro Erróneo", type="secondary", key=f"btn_del_{estiba_a_revisar['id']}", use_container_width=True):
+            if st.button("🗑️ Cancelar Registro", type="secondary", key=f"btn_del_{estiba_a_revisar['id']}", use_container_width=True):
                 ejecutar_query_directa("DELETE FROM estibas WHERE id = ?", (estiba_a_revisar['id'],))
-                st.toast("Registro descartado correctamente.", icon="🗑️")
+                st.toast("Registro cancelado correctamente.", icon="🗑️")
                 st.rerun()
 
 # ============================================================
-#  CONTROL DE PRODUCCIÓN GENERAL (DASHBOARD)
+#  CONTROL DE PRODUCCION GENERAL (DASHBOARD)
 # ============================================================
 st.write("")
 st.header("📊 Métricas de Control del Lote y Programa")
 
 if not st.session_state.orden_configurada:
-    st.info("💡 Proporcione un encabezado válido en la sección superior para desplegar las estadísticas de producción.")
+    st.info("💡 Proporcione los datos en la sección superior para desplegar las estadísticas de producción.")
 else:
     linea_activa = st.session_state.orden_activa["linea_produccion"]
     producto_activo = st.session_state.orden_activa["producto"]
@@ -229,7 +227,6 @@ else:
     ####ESTE DATO SE RECIBE DE LA PROGRAMACION EN KPI
     CANTIDAD_PROGRAMADA = 1300 
 
-    # 🔥 Llamada limpia al módulo database
     todas_del_programa, validadas_lote_activo = obtener_metricas_programa(linea_activa, producto_activo, lote_activo)
 
     cajas_turno1 = sum(int(e["cajas_reales"] or 0) for e in validadas_lote_activo if int(e["turno"]) == 1)
@@ -259,32 +256,31 @@ else:
     with t_col4:
         with st.container(border=True): st.metric("Total cajas", f"{cajas_turno1+cajas_turno2+cajas_turno3:,} unds")
 
-    # ============================================================
-    #  MONITOREO DINÁMICO DEL ROBOT PALETIZADOR
-    # ============================================================
-    st.write("")
-    st.subheader("Estatus del Brazo Paletizador")
-    
-    if st.button("🔧 Simular Pulso PLC (Caja colocada por Robot +1)", use_container_width=True):
-        st.session_state.robot_cajas_actual += 1
+    with st.container(border=True):
+        # ============================================================
+        #  SIMULACION DEL ROBOT PALETIZADOR
+        # ============================================================
+        st.subheader("🦾 Simulación del Brazo Paletizador")
+        
+        if st.button("🔧 Simular Pulso PLC (Caja colocada por Robot +1)", use_container_width=True):
+            st.session_state.robot_cajas_actual += 1
 
-    if st.session_state.robot_cajas_actual >= MAX_CAJAS_POR_ESTIBA:
-        tiempo_final = int(time.time() - st.session_state.robot_tiempo_inicio)
-        nuevo_registro = {
-            "id": st.session_state.contador_estiba_id, "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "hora_cierre": datetime.now().strftime("%H:%M"),
-            "turno": 1 if int(datetime.now().strftime("%H")) >= 22 or int(datetime.now().strftime("%H")) < 6 else (2 if int(datetime.now().strftime("%H")) < 14 else 3),
-            "linea": linea_activa, "producto": producto_activo, "sap": st.session_state.orden_activa["sap"], 
-            "fecha_llenaje": st.session_state.orden_activa["fecha_llenaje"], "fecha_vencimiento": st.session_state.orden_activa["fecha_vencimiento"], 
-            "lote": lote_activo, "cajas_sistema": st.session_state.robot_cajas_actual, "cajas_reales": st.session_state.robot_cajas_actual, 
-            "tiempo_segundos": tiempo_final, "estado": "Pendiente de Validación", "operador": "", "sscc": generar_sscc_local()
-        }
-        guardar_estiba(nuevo_registro)
-        st.session_state.contador_estiba_id += 1
-        st.session_state.robot_cajas_actual = 0
-        st.session_state.robot_tiempo_inicio = time.time()
-        st.toast("¡Pallet lleno! Robot rotando posición.", icon="🤖")
-        st.rerun()
+        if st.session_state.robot_cajas_actual >= MAX_CAJAS_POR_ESTIBA:
+            tiempo_final = int(time.time() - st.session_state.robot_tiempo_inicio)
+            nuevo_registro = {
+                "id": st.session_state.contador_estiba_id, "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "hora_cierre": datetime.now().strftime("%H:%M"),
+                "turno": 1 if int(datetime.now().strftime("%H")) >= 22 or int(datetime.now().strftime("%H")) < 6 else (2 if int(datetime.now().strftime("%H")) < 14 else 3),
+                "linea": linea_activa, "producto": producto_activo, "sap": st.session_state.orden_activa["sap"], 
+                "fecha_llenaje": st.session_state.orden_activa["fecha_llenaje"], "fecha_vencimiento": st.session_state.orden_activa["fecha_vencimiento"], 
+                "lote": lote_activo, "cajas_sistema": st.session_state.robot_cajas_actual, "cajas_reales": st.session_state.robot_cajas_actual, 
+                "tiempo_segundos": tiempo_final, "estado": "Pendiente de Validación", "operador": "", "sscc": generar_sscc_local()
+            }
+            guardar_estiba(nuevo_registro)
+            st.session_state.contador_estiba_id += 1
+            st.session_state.robot_cajas_actual = 0
+            st.session_state.robot_tiempo_inicio = time.time()
+            st.rerun()
 
     c_rb1, c_rb2 = st.columns(2)
     with c_rb1:
@@ -311,7 +307,7 @@ else:
         st.rerun()
 
     st.write("")
-    st.markdown(f"📊 **Bitácora Física de Entrega del Lote Activo**")
+    st.markdown(f"📊 **Bitácora del Lote Activo**")
     if not validadas_lote_activo:
         df_vacia = pd.DataFrame(columns=["Pallet ID", "Hora Cierre", "Turno", "Código SSCC", "Cajas", "Operador"])
         st.dataframe(df_vacia, use_container_width=True, hide_index=True)
@@ -322,10 +318,10 @@ else:
         st.dataframe(df_mostrar, use_container_width=True, hide_index=True)
 
 # ============================================================
-#  MÓDULO AUDITOR: REVISIÓN DE ARCHIVO HISTÓRICO
+#  MODULO CONSULTAR DATOS PASADOS
 # ============================================================
 st.write("")
-with st.expander("🔍 Módulo de Auditoría: Consultar Historial Antiguo", expanded=False):
+with st.expander("🔍 Historial: Consultar datos", expanded=False):
     col_f1, col_f2, col_f3 = st.columns(3)
     with col_f1:
         fecha_seleccionada = st.date_input("Filtrar por Fecha:", value=datetime.now(), key="audit_fecha")
@@ -334,7 +330,7 @@ with st.expander("🔍 Módulo de Auditoría: Consultar Historial Antiguo", expa
     lineas_disponibles, productos_disponibles = obtener_valores_unicos_por_fecha(fecha_str)
     
     with col_f2: linea_seleccionada = st.selectbox("Filtrar por Línea:", ["Todas"] + lineas_disponibles, key="audit_linea")
-    with col_f3: producto_seleccionada = st.selectbox("Filtrar por SKU Producto:", ["Todos"] + productos_disponibles, key="audit_producto")
+    with col_f3: producto_seleccionada = st.selectbox("Filtrar por Producto:", ["Todos"] + productos_disponibles, key="audit_producto")
 
     registros_filtrados = obtener_estibas_filtradas(fecha_str, linea_seleccionada, producto_seleccionada)
 
